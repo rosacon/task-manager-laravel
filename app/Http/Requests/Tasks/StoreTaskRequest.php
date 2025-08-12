@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Tasks;
 
+use App\Models\Task;
+
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTaskRequest extends FormRequest
@@ -11,8 +13,9 @@ class StoreTaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Task::class);
     }
+
 
     protected function prepareForValidation()
     {
@@ -38,6 +41,7 @@ class StoreTaskRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'title.required' => 'El título es obligatorio.',
             'title.regex' => 'El título debe contener al menos una letra y puede incluir números.',
         ];
     }

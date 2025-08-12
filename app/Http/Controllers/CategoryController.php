@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Categories\StoreCategoryRequest;
+use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\Task;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     public function index(Request $request)
     {
         $q = trim($request->input('search', ''));
@@ -16,7 +22,7 @@ class CategoryController extends Controller
             ->when($q, fn($qBuilder, $term) => $qBuilder->where('name', 'like', "%{$term}%"))
             ->latest();
 
-        $categories = $query->paginate(50)->appends($request->except('page'));
+        $categories = $query->paginate(2)->appends($request->except('page'));
 
         return view('categories.index', compact('categories'));
     }
@@ -27,10 +33,9 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate(['name' => 'required|string|max:255']);
-        Category::create($request->all());
+    public function store(StoreCategoryRequest $request)    
+    {               
+        $request->user()->categories()->create($request->validated());    
         return redirect()->route('categories.index')->with('success', 'Categoría creada');
     }
 
@@ -39,10 +44,9 @@ class CategoryController extends Controller
         return view('categories.edit', compact('category'));
     }
 
-    public function update(Request $request, Category $category)
-    {
-        $request->validate(['name' => 'required|string|max:255']);
-        $category->update($request->all());
+    public function update(UpdateCategoryRequest $request, Category $category)
+    {        
+        $category->update($request->validated());
         return redirect()->route('categories.index')->with('success', 'Categoría actualizada');
     }
 

@@ -26,4 +26,9 @@ class Category extends Model
 	protected $fillable = [
 		'name'
 	];
+
+	public function user()
+	{
+		return $this->belongsTo(\App\Models\User::class);
+	}
 }
