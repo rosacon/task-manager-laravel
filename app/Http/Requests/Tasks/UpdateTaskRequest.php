@@ -11,7 +11,7 @@ class UpdateTaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('update', $this->route('task'));
     }
 
     protected function prepareForValidation()
@@ -26,8 +26,8 @@ class UpdateTaskRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    
-  public function rules(): array
+
+    public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:255', 'regex:/^(?!\d+$).*/'],
@@ -42,6 +42,4 @@ class UpdateTaskRequest extends FormRequest
             'title.regex' => 'El título debe contener al menos una letra y puede incluir números.',
         ];
     }
-
- 
 }
