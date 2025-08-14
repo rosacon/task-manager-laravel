@@ -16,15 +16,24 @@ class TaskController extends Controller
 
     public function index(Request $request)
     {
-        $q = trim($request->input('search', ''));
+        $query = Task::query();
 
-        $query = Task::query()
-            ->when($q, fn($qBuilder, $term) => $qBuilder->where('title', 'like', "%{$term}%"))
-            ->latest();
+        // Buscador
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
-        $tasks = $query->paginate(2)->appends($request->except('page'));
+        // Paginación (9 por página, conserva query params)
+        $tasks = $query->latest()->paginate(9)->withQueryString();
 
-        return view('tasks.index', compact('tasks'));
+        // Tipo de vista: 'cards' (por defecto) o 'table'
+        $viewType = $request->get('view', 'cards');
+
+        return view('tasks.index', compact('tasks', 'viewType'));
     }
 
     public function create()
@@ -35,7 +44,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         // Forma segura: crear mediante la relación del usuario autenticado
-        $request->user()->tasks()->create($request->validated());        
+        $request->user()->tasks()->create($request->validated());
 
         return redirect()->route('tasks.index')->with('success', 'Tarea creada exitosamente.');
     }

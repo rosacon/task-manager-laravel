@@ -35,7 +35,9 @@
 
         <!-- Page Content -->
         <main>
+            <div class="container mt-4">                
             @yield('content')
+            </div>
         </main>
     </div>
 </body>

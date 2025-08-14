@@ -16,15 +16,17 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
+        $viewType = $request->input('view', 'cards');
+
         $q = trim($request->input('search', ''));
 
         $query = Category::query()
             ->when($q, fn($qBuilder, $term) => $qBuilder->where('name', 'like', "%{$term}%"))
             ->latest();
 
-        $categories = $query->paginate(2)->appends($request->except('page'));
+        $categories = $query->paginate(5)->appends($request->except('page'));
 
-        return view('categories.index', compact('categories'));
+        return view('categories.index', compact('categories', 'viewType'));
     }
 
 
