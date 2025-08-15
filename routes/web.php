@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PokemonController;
+use App\Http\Controllers\WeatherController;
 
 // Página inicial redirige al dashboard o tareas
 Route::get('/', function () {
@@ -34,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class)->except(['index']);
 
     Route::get('/pokemon', [PokemonController::class, 'index'])->name('pokemon.index');
+    Route::get('/', [WeatherController::class, 'index']);
+    Route::get('/weather', [WeatherController::class, 'getWeather'])->name('weather.get');
 });
 
 

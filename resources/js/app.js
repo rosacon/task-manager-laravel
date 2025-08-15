@@ -1,3 +1,5 @@
+import '../css/weather.css';
+
 import './bootstrap';
 
 import Alpine from 'alpinejs';
