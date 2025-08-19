@@ -8,7 +8,8 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">    
+    @stack('styles')
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -35,11 +36,12 @@
 
         <!-- Page Content -->
         <main>
-            <div class="container mt-4">                
-            @yield('content')
+            <div class="container mt-4">
+                @yield('content')
             </div>
         </main>
     </div>
+    @stack('scripts')
 </body>
 
 </html>
