@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PokemonController;
 use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\LocationController;
 
 // Página inicial redirige al dashboard o tareas
 Route::get('/', function () {
@@ -37,9 +38,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/pokemon', [PokemonController::class, 'index'])->name('pokemon.index');
     Route::get('/', [WeatherController::class, 'index']);
     Route::get('/weather', [WeatherController::class, 'getWeather'])->name('weather.get');
+
+    Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+    Route::post('/locations/states', [LocationController::class, 'getStates'])->name('locations.states');
+    Route::post('/locations/cities', [LocationController::class, 'getCities'])->name('locations.cities');
+    Route::get('/locations/refresh', [LocationController::class, 'refreshCountries'])->name('locations.refresh');
+    Route::get('locations/refresh-states/{country}', [LocationController::class, 'refreshStates'])
+    ->name('locations.refresh.states');
+    Route::get('locations/refresh-countries-json', [LocationController::class, 'refreshCountriesJson']);
+
+
 });
-
-
 
 // Autenticación
 require __DIR__ . '/auth.php';
