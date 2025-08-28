@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'csc' => [
+        'key' => env('CSC_API_KEY'),
+        'base_url' => env('CSC_BASE_URL', 'https://api.countrystatecity.in/v1'),
+    ],
 
 ];

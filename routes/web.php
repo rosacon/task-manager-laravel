@@ -8,6 +8,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PokemonController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PruebaFetchyAxiosController;
+use App\Http\Controllers\PruebaSelectJsController;
+use App\Http\Controllers\PruebaPaisesController;
+use App\Http\Controllers\ApiTestTryCatchController;
+use App\Http\Controllers\CscController;
 
 // Página inicial redirige al dashboard o tareas
 Route::get('/', function () {
@@ -44,10 +49,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/locations/cities', [LocationController::class, 'getCities'])->name('locations.cities');
     Route::get('/locations/refresh', [LocationController::class, 'refreshCountries'])->name('locations.refresh');
     Route::get('locations/refresh-states/{country}', [LocationController::class, 'refreshStates'])
-    ->name('locations.refresh.states');
+        ->name('locations.refresh.states');
     Route::get('locations/refresh-countries-json', [LocationController::class, 'refreshCountriesJson']);
+    Route::get('/pruebaselectjs', [PruebaSelectJsController::class, 'index'])->name('pruebaselectjs.index');
+    Route::get('/pruebafetchyaxios', [PruebaFetchyAxiosController::class, 'index'])->name('pruebafetchyaxios.index');
+    Route::get('/pruebapaises', [PruebaPaisesController::class, 'index'])->name('pruebapaises.index');
+    Route::get('/pruebapaises/refresh', [PruebaPaisesController::class, 'refresh'])->name('pruebapaises.refresh');
+    Route::get('/apitest', [ApiTestTryCatchController::class, 'getData']);
 
-
+    Route::prefix('csc')->group(function () {
+    Route::get('/countries', [CscController::class, 'countries'])->name('csc.countries');
+    Route::get('/states/{countryIso2}', [CscController::class, 'states'])->name('csc.states');
+    Route::get('/cities/{countryIso2}/{stateIso2}', [CscController::class, 'cities'])->name('csc.cities');
+});
+    
 });
 
 // Autenticación
