@@ -2,7 +2,7 @@
 
 @section('content')
     <x-list-layout
-    title="Lista de tasks"
+    title="Lista de tareas"
     :items="$tasks"
     :viewType="$viewType"
     rowView="partials.row"
