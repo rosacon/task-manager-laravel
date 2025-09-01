@@ -29,7 +29,7 @@ class TaskController extends Controller
         }
 
         // Paginación (9 por página, conserva query params)
-        $tasks = $query->latest()->paginate(9)->withQueryString();
+        $tasks = $query->latest()->paginate(3)->withQueryString();
 
         // Tipo de vista: 'cards' (por defecto) o 'table'
         $viewType = $request->get('view', 'cards');
