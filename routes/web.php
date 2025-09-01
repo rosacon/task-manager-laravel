@@ -8,8 +8,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Rutas públicas (index públicos)
-Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+
 
 // Dashboard: redirigir al listado de tareas (evita vistas vacías tras el login)
 Route::get('/dashboard', function () {
@@ -17,10 +16,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rutas protegidas por login
-Route::middleware('auth')->group(function () {    
+Route::middleware('auth')->group(function () {
 
     // Recursos (index ya está definido públicamente arriba)
-    Route::resource('tasks', TaskController::class)->except(['index']);    
+    Route::resource('tasks', TaskController::class);
+    // Rutas públicas (index públicos)
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 });
 
 // Autenticación (Breeze / Fortify / auth.php)

@@ -7,19 +7,14 @@ use Tests\TestCase;
 use App\Models\Task;
 use App\Models\User;
 
-class IndexTaskTest extends TestCase
+class IndexTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function test_tasks_index_shows_tasks_and_view_variables()
     {
         $user = User::factory()->create();
         Task::factory()->count(3)->for($user)->create(['title' => 'Tarea ejemplo']);
-
-        // Ej: si la vista difiere para usuarios no autenticados, pruebe ambos escenarios:
-        /*$this->get(route('tasks.index'))
-            ->assertStatus(200)
-            ->assertViewIs('tasks.index')
-            ->assertViewHas('tasks');*/
 
         // Si la vista muestra tareas del usuario autenticado:
         $this->actingAs($user)
@@ -42,7 +37,29 @@ class IndexTaskTest extends TestCase
         $this->actingAs($userA)
             ->get(route('tasks.index'))
             ->assertStatus(200)
-            ->assertSee('Tarea de A')   // debería ver sus tareas
-            ->assertDontSee('Tarea de B'); // no debería ver las de otros
+            ->assertSee('Tarea de A')
+            ->assertDontSee('Tarea de B') // importante para que no aparezcan tareas de otro
+            ->assertViewHas('tasks', function ($tasks) use ($userA) {
+                return $tasks->every(fn($task) => $task->user_id === $userA->id);
+            });
+    }
+
+    public function test_guest_users_are_redirected_to_login_when_accessing_tasks_index()
+    {
+        $this->get(route('tasks.index'))
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_it_shows_pagination_when_tasks_exceed_page_limit()
+    {
+        $user = User::factory()->create();
+
+        // Crear 30 tareas (más de las que caben en una página por defecto = 15)
+        Task::factory()->count(30)->for($user)->create();
+
+        $this->actingAs($user)
+            ->get(route('tasks.index'))
+            ->assertStatus(200)
+            ->assertSee('class="pagination"');
     }
 }
